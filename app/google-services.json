@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "525773819545",
+    "firebase_url": "https://camerrow-project.firebaseio.com",
+    "project_id": "camerrow-project",
+    "storage_bucket": "camerrow-project.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:525773819545:android:0bf5c5f2b1d62c8b",
+        "android_client_info": {
+          "package_name": "com.camerrow.camerrowproject"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "525773819545-o05vaf076laqba8ha9he41759jessau9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.camerrow.camerrowproject",
+            "certificate_hash": "90ade3104d2e33e5778b966f5e2e130e31f464da"
+          }
+        },
+        {
+          "client_id": "525773819545-omvdqofbhg03ruh7s092uc67vlon35oj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBbQIM15VI_zcBSMl6RBZexGb56kr17isU"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "525773819545-omvdqofbhg03ruh7s092uc67vlon35oj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
