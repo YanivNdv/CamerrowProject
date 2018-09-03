@@ -2,6 +2,8 @@ package com.camerrow.camerrowproject;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.design.widget.TabLayout;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -20,6 +22,12 @@ import io.fabric.sdk.android.Fabric;
 
 public class MainActivity extends AppCompatActivity {
 
+    //Fragments
+    private ViewPager mViewPager;
+    private TabLayout mTabLayout;
+    private TabsAccessorAdapter mTabsAccessorAdapter;
+
+    //Firebase
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private DatabaseReference mDatabaseUsers;
@@ -33,6 +41,16 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_main);
+
+        //Fragments
+        mViewPager = (ViewPager) findViewById(R.id.main_tabs_pager);
+        mTabsAccessorAdapter = new TabsAccessorAdapter(getSupportFragmentManager());
+        mViewPager.setAdapter(mTabsAccessorAdapter);
+        //set second fragment to launch first
+        mViewPager.setCurrentItem(1);
+        mTabLayout = (TabLayout) findViewById(R.id.main_tabs);
+        mTabLayout.setupWithViewPager(mViewPager);
+
 
         mLogoutBtn = (Button) findViewById(R.id.logoutBtn);
 
