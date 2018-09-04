@@ -2,11 +2,13 @@ package com.camerrow.camerrowproject;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -35,7 +37,6 @@ public class MainActivity extends AppCompatActivity {
     private DatabaseReference mDatabaseUsers;
 
 
-    private Button mLogoutBtn;
 
 
     @Override
@@ -43,6 +44,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_main);
+        //remove border between action bar and app bar
+        getSupportActionBar().setElevation(0);
+
 
         //Fragments
         mViewPager = (ViewPager) findViewById(R.id.main_tabs_pager);
@@ -52,9 +56,6 @@ public class MainActivity extends AppCompatActivity {
         mViewPager.setCurrentItem(1);
         mTabLayout = (TabLayout) findViewById(R.id.main_tabs);
         mTabLayout.setupWithViewPager(mViewPager);
-
-
-        mLogoutBtn = (Button) findViewById(R.id.logoutBtn);
 
         mAuth = FirebaseAuth.getInstance();
         mDatabaseUsers = FirebaseDatabase.getInstance().getReference().child("Users");
@@ -72,18 +73,24 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
-        mLogoutBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                logout();
-            }
-        });
     }
 
+    // Options Menu Creator
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main_menu, menu);
         return super.onCreateOptionsMenu(menu);
+    }
+
+
+    //  Menu on click functions
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        if (item.getItemId() == R.id.action_logout)
+            logout();
+
+        return super.onOptionsItemSelected(item);
     }
 
     private void checkUserExist() {
