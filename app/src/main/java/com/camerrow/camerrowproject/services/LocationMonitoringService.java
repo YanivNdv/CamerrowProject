@@ -39,14 +39,15 @@ public class LocationMonitoringService extends Service implements
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        Log.d("started","service");
         mLocationClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .addApi(LocationServices.API)
                 .build();
 
-        mLocationRequest.setInterval(5000);
-        mLocationRequest.setFastestInterval(5000);
+        mLocationRequest.setInterval(1000);
+        mLocationRequest.setFastestInterval(1000);
 
 
         int priority = LocationRequest.PRIORITY_HIGH_ACCURACY; //by default

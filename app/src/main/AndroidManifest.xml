@@ -23,6 +23,9 @@
         </activity>
         <activity android:name=".LoginActivity" />
         <activity android:name=".RegisterActivity"></activity>
+
+        <service android:name=".services.LocationMonitoringService" />
+
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="1b5d0421be41e0a3e48c822ae7809706407180f4" />

@@ -76,6 +76,9 @@ public class MainActivity extends AppCompatActivity {
         //remove border between action bar and app bar
         getSupportActionBar().setElevation(0);
 
+        startService(new Intent(this, LocationMonitoringService.class));
+
+
         mMsgView = (TextView) findViewById(R.id.msgView);
 
         //Fragments
@@ -107,12 +110,17 @@ public class MainActivity extends AppCompatActivity {
                 new BroadcastReceiver() {
                     @Override
                     public void onReceive(Context context, Intent intent) {
+                        Log.d("Recieved:","Location");
                         String latitude = intent.getStringExtra(LocationMonitoringService.EXTRA_LATITUDE);
                         String longitude = intent.getStringExtra(LocationMonitoringService.EXTRA_LONGITUDE);
 
                         if (latitude != null && longitude != null) {
                             mMsgView.setText(getString(R.string.msg_location_service_started) + "\n Latitude : " + latitude + "\n Longitude: " + longitude);
+                            Log.d("Location:", latitude + "," + longitude);
                         }
+
+                        else
+                            Log.d("Location:","is Null");
                     }
                 }, new IntentFilter(LocationMonitoringService.ACTION_LOCATION_BROADCAST)
         );
@@ -180,7 +188,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-
         checkGooglePlayServices();
     }
 
@@ -189,6 +196,7 @@ public class MainActivity extends AppCompatActivity {
      * Step 1: Check Google Play services
      */
     private void checkGooglePlayServices() {
+
 
         //Check whether this user has installed Google play service which is being used by Location updates.
         if (isGooglePlayServicesAvailable()) {
@@ -205,6 +213,7 @@ public class MainActivity extends AppCompatActivity {
      * Step 2: Check & Prompt Internet connection
      */
     private Boolean checkInternetConnection(DialogInterface dialog) {
+
 
         ConnectivityManager connectivityManager
                 = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -270,6 +279,7 @@ public class MainActivity extends AppCompatActivity {
      * Step 3: Start the Location Monitor Service
      */
     private void locationMonitorService() {
+
 
         //And it will be keep running until you close the entire application from task manager.
         //This method will executed only once.
