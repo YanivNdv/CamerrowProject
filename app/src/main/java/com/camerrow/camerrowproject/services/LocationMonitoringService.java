@@ -14,18 +14,28 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
+import com.firebase.geofire.GeoFire;
+import com.firebase.geofire.GeoLocation;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.internal.Constants;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-
-
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 
 public class LocationMonitoringService extends Service implements
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
         com.google.android.gms.location.LocationListener {
+
+    private FirebaseAuth mAuth;
+    private DatabaseReference mDatabaseUsers;
+
+    private String user_id;
+
 
 
     private static final String TAG = LocationMonitoringService.class.getSimpleName();
@@ -38,13 +48,32 @@ public class LocationMonitoringService extends Service implements
 
 
     @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.d("started","service");
+    public void onCreate() {
+
+        mAuth = FirebaseAuth.getInstance();
+
+        mDatabaseUsers = FirebaseDatabase.getInstance().getReference().child("Users");
+        mDatabaseUsers.keepSynced(true);
+
+        user_id = mAuth.getCurrentUser().getUid();
+
         mLocationClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .addApi(LocationServices.API)
                 .build();
+        super.onCreate();
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        Log.d("started","service");
+        //moved to onCreate because  GoogleApiClient is throwing “GoogleApiClient is not connected yet”
+//        mLocationClient = new GoogleApiClient.Builder(this)
+//                .addConnectionCallbacks(this)
+//                .addOnConnectionFailedListener(this)
+//                .addApi(LocationServices.API)
+//                .build();
 
         mLocationRequest.setInterval(1000);
         mLocationRequest.setFastestInterval(1000);
@@ -99,12 +128,31 @@ public class LocationMonitoringService extends Service implements
         Log.d(TAG, "Location changed");
 
 
+
         if (location != null) {
             Log.d(TAG, "== location != null");
 
             //Send result to activities
             sendMessageToUI(String.valueOf(location.getLatitude()), String.valueOf(location.getLongitude()));
+            Log.d("UserUID",mAuth.getCurrentUser().getUid());
+            //Update location in Database
+//            GeoFire geoFire = new GeoFire(mDatabaseUsers);
+//            geoFire.setLocation(user_id,new GeoLocation(location.getLatitude(),location.getLongitude()));
+//            mDatabaseUsers.child(user_id).child("Location").child("longitude").setValue(location.getLongitude());
+//            mDatabaseUsers.child(user_id).child("Location").child("latitude").setValue(location.getLatitude());
+            GeoFire geoFire = new GeoFire(mDatabaseUsers.child(user_id));
+            geoFire.setLocation("location", new GeoLocation(location.getLatitude(), location.getLongitude()), new GeoFire.CompletionListener() {
+                @Override
+                public void onComplete(String key, DatabaseError error) {
+
+                }
+            });
+
+
+
         }
+
+
     }
 
     private void sendMessageToUI(String lat, String lng) {
