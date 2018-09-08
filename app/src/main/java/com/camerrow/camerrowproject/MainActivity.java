@@ -66,6 +66,8 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseAuth.AuthStateListener mAuthListener;
     private DatabaseReference mDatabaseUsers;
 
+    private String user_id;
+
 
 
 
@@ -77,7 +79,6 @@ public class MainActivity extends AppCompatActivity {
         //remove border between action bar and app bar
         getSupportActionBar().setElevation(0);
 
-        startService(new Intent(this, LocationMonitoringService.class));
 
 
         mMsgView = (TextView) findViewById(R.id.msgView);
@@ -110,6 +111,13 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
+        user_id = mAuth.getCurrentUser().getUid();
+
+
+
+        startService(new Intent(MainActivity.this, LocationMonitoringService.class));
+
+
         LocalBroadcastManager.getInstance(this).registerReceiver(
                 new BroadcastReceiver() {
                     @Override
@@ -121,6 +129,8 @@ public class MainActivity extends AppCompatActivity {
                         if (latitude != null && longitude != null) {
                             mMsgView.setText(getString(R.string.msg_location_service_started) + "\n Latitude : " + latitude + "\n Longitude: " + longitude);
                             Log.d("Location:", latitude + "," + longitude);
+
+                            storeInDatabase(Double.parseDouble(latitude), Double.parseDouble(longitude));
                         }
 
                         else
@@ -129,6 +139,13 @@ public class MainActivity extends AppCompatActivity {
                 }, new IntentFilter(LocationMonitoringService.ACTION_LOCATION_BROADCAST)
         );
 
+    }
+
+    private void storeInDatabase(double latitude, double longitude) {
+
+
+        mDatabaseUsers.child(user_id).child("location").child("longitude").setValue(longitude);
+        mDatabaseUsers.child(user_id).child("location").child("latitude").setValue(latitude);
     }
 
     // Options Menu Creator
@@ -175,6 +192,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void logout() {
+        //Stop location sharing service to app server.........
+
+        stopService(new Intent(this, LocationMonitoringService.class));
+        mAlreadyStartedService = false;
+        //Ends................................................
         mAuth.signOut();
     }
 

@@ -16,8 +16,8 @@ public class TabsAccessorAdapter extends FragmentPagerAdapter{
         switch (i)
         {
             case 0:
-                PrivateFragment privateFragment = new PrivateFragment();
-                return privateFragment;
+                PersonalFragment personalFragment = new PersonalFragment();
+                return personalFragment;
 
             case 1:
                 FriendsFragment friendsFragment  = new FriendsFragment();
@@ -43,7 +43,7 @@ public class TabsAccessorAdapter extends FragmentPagerAdapter{
         switch (position)
         {
             case 0:
-                return "Private";
+                return "Personal";
             case 1:
                 return "Friends";
             case 2:
