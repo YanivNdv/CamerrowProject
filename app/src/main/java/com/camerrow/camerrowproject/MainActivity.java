@@ -138,7 +138,17 @@ public class MainActivity extends AppCompatActivity {
                 }, new IntentFilter(LocationMonitoringService.ACTION_LOCATION_BROADCAST)
         );
 
+//        sendDataToFragment();
+
     }
+
+//    private void sendDataToFragment() {
+//        Bundle bundle = new Bundle();
+//        bundle.putString("edttext", "From Activity");
+//        // set Fragmentclass Arguments
+//        Fragmentclass fragobj = new Fragmentclass();
+//        fragobj.setArguments(bundle);
+//    }
 
     private void storeInDatabase(Double latitude, Double longitude) {
 
