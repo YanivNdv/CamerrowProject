@@ -80,13 +80,13 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().setElevation(0);
 
 
-
         mMsgView = (TextView) findViewById(R.id.msgView);
 
         //Fragments
         mViewPager = (ViewPager) findViewById(R.id.main_tabs_pager);
         mTabsAccessorAdapter = new TabsAccessorAdapter(getSupportFragmentManager());
         mViewPager.setAdapter(mTabsAccessorAdapter);
+
         //set second fragment to launch first
         mViewPager.setCurrentItem(1);
         mTabLayout = (TabLayout) findViewById(R.id.main_tabs);
@@ -111,7 +111,8 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
-        user_id = mAuth.getCurrentUser().getUid();
+        if(mAuth.getCurrentUser()!=null)
+            user_id = mAuth.getCurrentUser().getUid();
 
 
 
@@ -122,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
                 new BroadcastReceiver() {
                     @Override
                     public void onReceive(Context context, Intent intent) {
-                        Log.d("Recieved:","Location");
+                        Log.d("Recieved:", "Location");
                         String latitude = intent.getStringExtra(LocationMonitoringService.EXTRA_LATITUDE);
                         String longitude = intent.getStringExtra(LocationMonitoringService.EXTRA_LONGITUDE);
 
@@ -131,18 +132,15 @@ public class MainActivity extends AppCompatActivity {
                             Log.d("Location:", latitude + "," + longitude);
 
                             storeInDatabase(Double.parseDouble(latitude), Double.parseDouble(longitude));
-                        }
-
-                        else
-                            Log.d("Location:","is Null");
+                        } else
+                            Log.d("Location:", "is Null");
                     }
                 }, new IntentFilter(LocationMonitoringService.ACTION_LOCATION_BROADCAST)
         );
 
     }
 
-    private void storeInDatabase(double latitude, double longitude) {
-
+    private void storeInDatabase(Double latitude, Double longitude) {
 
         mDatabaseUsers.child(user_id).child("location").child("longitude").setValue(longitude);
         mDatabaseUsers.child(user_id).child("location").child("latitude").setValue(latitude);
@@ -192,11 +190,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void logout() {
-        //Stop location sharing service to app server.........
-
+//        //Stop location sharing service to app server.........
+//
         stopService(new Intent(this, LocationMonitoringService.class));
         mAlreadyStartedService = false;
-        //Ends................................................
+//        //Ends................................................
         mAuth.signOut();
     }
 

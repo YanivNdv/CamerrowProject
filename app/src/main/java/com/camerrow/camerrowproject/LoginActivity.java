@@ -105,7 +105,28 @@ public class LoginActivity extends AppCompatActivity {
 
         final String user_id = mAuth.getCurrentUser().getUid();
 
-        mDatabaseUsers.addValueEventListener(new ValueEventListener() {
+//        mDatabaseUsers.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//
+//                if(dataSnapshot.hasChild(user_id)){
+//
+//                    Intent mainIntent = new Intent(LoginActivity.this,MainActivity.class);
+//                    mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//                    startActivity(mainIntent);
+//
+//                } else {
+//                    Toast.makeText(LoginActivity.this, "Please set up your account.", Toast.LENGTH_LONG).show();
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//            }
+//        });
+        // this listener avoid page to refresh when db updated
+        mDatabaseUsers.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
@@ -118,6 +139,7 @@ public class LoginActivity extends AppCompatActivity {
                 } else {
                     Toast.makeText(LoginActivity.this, "Please set up your account.", Toast.LENGTH_LONG).show();
                 }
+
             }
 
             @Override

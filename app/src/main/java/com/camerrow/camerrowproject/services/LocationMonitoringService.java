@@ -54,34 +54,45 @@ public class LocationMonitoringService extends Service implements
 
 
 //        mAuth = FirebaseAuth.getInstance();
-//
+
 //        mDatabaseUsers = FirebaseDatabase.getInstance().getReference().child("Users");
 //        mDatabaseUsers.keepSynced(true);
 
-//        if (mAuth.getCurrentUser()!= null) {
-//            user_id = mAuth.getCurrentUser().getUid();
+//            if (mAuth.getCurrentUser()!= null) {
+//                user_id = mAuth.getCurrentUser().getUid();
 
-            mLocationClient = new GoogleApiClient.Builder(this)
-                    .addConnectionCallbacks(this)
-                    .addOnConnectionFailedListener(this)
-                    .addApi(LocationServices.API)
-                    .build();
+                mLocationClient = new GoogleApiClient.Builder(this)
+                        .addConnectionCallbacks(this)
+                        .addOnConnectionFailedListener(this)
+                        .addApi(LocationServices.API)
+                        .build();
 
-            mLocationClient.connect();
-//        }
+//            mLocationRequest.setInterval(1000);
+//            mLocationRequest.setFastestInterval(1000);
+//
+//            int priority = LocationRequest.PRIORITY_HIGH_ACCURACY; //by default
+//
+//            mLocationRequest.setPriority(priority);
+//
+//
+//
+//
+//
+//            mLocationClient.connect();
+ //       }
 
 
     }
 
-    @Override
+//    @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d("started","service");
-        //moved to onCreate because  GoogleApiClient is throwing “GoogleApiClient is not connected yet”
-//        mLocationClient = new GoogleApiClient.Builder(this)
-//                .addConnectionCallbacks(this)
-//                .addOnConnectionFailedListener(this)
-//                .addApi(LocationServices.API)
-//                .build();
+//        //moved to onCreate because  GoogleApiClient is throwing “GoogleApiClient is not connected yet”
+////        mLocationClient = new GoogleApiClient.Builder(this)
+////                .addConnectionCallbacks(this)
+////                .addOnConnectionFailedListener(this)
+////                .addApi(LocationServices.API)
+////                .build();
 
         mLocationRequest.setInterval(1000);
         mLocationRequest.setFastestInterval(1000);
@@ -92,7 +103,7 @@ public class LocationMonitoringService extends Service implements
 
 
         mLocationRequest.setPriority(priority);
-//        mLocationClient.connect();
+        mLocationClient.connect();
 
         //Make it stick to the notification panel so it is less prone to get cancelled by the Operating System.
         return START_STICKY;
@@ -142,21 +153,9 @@ public class LocationMonitoringService extends Service implements
 
             //Send result to activities
             sendMessageToUI(String.valueOf(location.getLatitude()), String.valueOf(location.getLongitude()));
-//            Log.d("UserUID",mAuth.getCurrentUser().getUid());
-//            //Update location in Database
-//            GeoFire geoFire = new GeoFire(mDatabaseUsers);
-//            geoFire.setLocation(user_id,new GeoLocation(location.getLatitude(),location.getLongitude()));
-//            mDatabaseUsers.child(user_id).child("Location").child("longitude").setValue(location.getLongitude());
-//            mDatabaseUsers.child(user_id).child("Location").child("latitude").setValue(location.getLatitude());
-//            GeoFire geoFire = new GeoFire(mDatabaseUsers.child(user_id));
-//            geoFire.setLocation("location", new GeoLocation(location.getLatitude(), location.getLongitude()), new GeoFire.CompletionListener() {
-//                @Override
-//                public void onComplete(String key, DatabaseError error) {
-//
-//                }
-//            });
 
-
+//            mDatabaseUsers.child(user_id).child("location").child("longitude").setValue(location.getLongitude());
+//            mDatabaseUsers.child(user_id).child("location").child("latitude").setValue(location.getLatitude());
 
         }
 
