@@ -10,8 +10,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseListAdapter;
 import com.google.firebase.auth.FirebaseAuth;
@@ -21,6 +23,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
@@ -28,9 +31,11 @@ import java.util.ArrayList;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class PersonalFragment extends Fragment {
+public class PersonalFragment extends Fragment{
 
     private View rootView;
+
+    private Button mAddPersonalBtn;
 
     private DatabaseReference mDatabaseUsers;
     private String user_id;
@@ -38,9 +43,10 @@ public class PersonalFragment extends Fragment {
 
     private ListView mPersonalListView;
 
-    private ArrayList<String> mPersonalArrayItems = new ArrayList<>();
+    private FirebaseListAdapter<PersonalObject> firebaseListAdapter;
 
-    private ArrayAdapter<String> mPersonalArrayItemsAdapter;
+    private double longitude;
+    private double latitude;
 
 
     public PersonalFragment() {
@@ -57,6 +63,8 @@ public class PersonalFragment extends Fragment {
                 Log.d("rootView", "is null");
                 rootView = inflater.inflate(R.layout.fragment_personal, container, false);
 
+                mAddPersonalBtn = (Button) rootView.findViewById(R.id.addPersonalBtn);
+
 
                 mDatabaseUsers = FirebaseDatabase.getInstance().getReference().child("Users");
                 user_id = FirebaseAuth.getInstance().getCurrentUser().getUid();
@@ -64,63 +72,60 @@ public class PersonalFragment extends Fragment {
 
                 mPersonalListView = (ListView) rootView.findViewById(R.id.personalListView);
 
-                mPersonalArrayItemsAdapter = new ArrayAdapter<String>(this.getContext(), android.R.layout.simple_list_item_1, mPersonalArrayItems);
 
 
-                mPersonalListView.setAdapter(mPersonalArrayItemsAdapter);
+                firebaseListAdapter = new FirebaseListAdapter<PersonalObject>(
+                        getActivity(),
+                        PersonalObject.class,
+                        android.R.layout.simple_list_item_1,
+                        mDatabaseUsers.child(user_id).child("personal")
 
-//                FirebaseListAdapter<String> firebaseListAdapter = new FirebaseListAdapter<String>(
-//                        getActivity(),
-//                        String.class,
-//                        android.R.layout.simple_list_item_1,
-//                        mDatabaseUsers.child(user_id).child("personal")
-//
-//                ) {
-//                    @Override
-//                    protected void populateView(View v, String model, int position) {
-//
-//                        TextView textView = (TextView) v.findViewById(android.R.id.text1);
-//                        textView.setText(model);
-//
-//                    }
-//                };
-//
-//                mPersonalListView.setAdapter(firebaseListAdapter);
-
-
-                mDatabaseUsers.child(user_id).child("personal").addChildEventListener(new ChildEventListener() {
+                ) {
                     @Override
-                    public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                    protected void populateView(View v, PersonalObject model, int position) {
 
-                        String value = dataSnapshot.child("name").getValue().toString();
-                        mPersonalArrayItems.add(value);
-                        mPersonalArrayItemsAdapter.notifyDataSetChanged();
-                    }
-
-                    @Override
-                    public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                        TextView textView = (TextView) v.findViewById(android.R.id.text1);
+                        textView.setText(model.getName());
 
                     }
+                };
 
-                    @Override
-                    public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+                mPersonalListView.setAdapter(firebaseListAdapter);
 
-                    }
 
-                    @Override
-                    public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                    }
-                });
             }
+
+            mAddPersonalBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    openDialog();
+                }
+            });
+
         // Inflate the layout for this fragment
         return rootView;
     }
+
+    private void openDialog() {
+
+
+        mDatabaseUsers.child(user_id).child("location").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                Log.d("datasnapshot", String.valueOf( dataSnapshot.child("latitude").getKey()));
+                latitude = (double) dataSnapshot.child("latitude").getValue();
+                longitude = (double) dataSnapshot.child("longitude").getValue();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+        PersonalDialog personalDialog = new PersonalDialog(latitude,longitude);
+        personalDialog.show(getFragmentManager(), "PersonalDialog");
+    }
+
 
 
 }

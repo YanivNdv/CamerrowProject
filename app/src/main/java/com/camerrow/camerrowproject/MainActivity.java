@@ -42,9 +42,12 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import io.fabric.sdk.android.Fabric;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements PersonalDialog.PersonalDialogListener{
 
     private static final String TAG = MainActivity.class.getSimpleName();
     /**
@@ -482,7 +485,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
-
-
+    @Override
+    public void sendBack(PersonalObject personalObject) {
+        Map mPersonalObjectMap = new HashMap();
+        mPersonalObjectMap.put("name",personalObject.getName());
+        mPersonalObjectMap.put("latitude",personalObject.getLatitude());
+        mPersonalObjectMap.put("longitude",personalObject.getLongitude());
+        mDatabaseUsers.child(user_id).child("personal").push().setValue(mPersonalObjectMap);
+    }
 }
