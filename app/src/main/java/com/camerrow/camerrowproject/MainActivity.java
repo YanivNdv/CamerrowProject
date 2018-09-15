@@ -68,6 +68,8 @@ public class MainActivity extends AppCompatActivity implements PersonalDialog.Pe
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private DatabaseReference mDatabaseUsers;
+    private DatabaseReference mDatabasePersonal;
+
 
     private String user_id;
 
@@ -101,6 +103,9 @@ public class MainActivity extends AppCompatActivity implements PersonalDialog.Pe
         mAuth = FirebaseAuth.getInstance();
         mDatabaseUsers = FirebaseDatabase.getInstance().getReference().child("Users");
         mDatabaseUsers.keepSynced(true);
+
+        mDatabasePersonal = FirebaseDatabase.getInstance().getReference().child("Personal");
+        mDatabasePersonal.keepSynced(true);
 
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -491,6 +496,9 @@ public class MainActivity extends AppCompatActivity implements PersonalDialog.Pe
         mPersonalObjectMap.put("name",personalObject.getName());
         mPersonalObjectMap.put("latitude",personalObject.getLatitude());
         mPersonalObjectMap.put("longitude",personalObject.getLongitude());
-        mDatabaseUsers.child(user_id).child("personal").push().setValue(mPersonalObjectMap);
+//        mDatabaseUsers.child(user_id).child("personal").push().setValue(mPersonalObjectMap);
+        mDatabasePersonal.child(user_id).push().setValue(mPersonalObjectMap);
+
+
     }
 }

@@ -51,6 +51,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-core:16.0.1'
     implementation 'com.google.firebase:firebase-core:16.0.3'
     implementation 'com.google.firebase:firebase-database:16.0.1'
+    implementation 'com.google.firebase:firebase-storage:16.0.1'
     implementation 'com.crashlytics.sdk.android:crashlytics:2.9.5'
     implementation 'com.google.firebase:firebase-auth:16.0.3'
 //    implementation 'com.google.android.gms:play-services-location:11.0.4'
@@ -59,6 +60,13 @@ dependencies {
 
     implementation 'com.firebaseui:firebase-ui:0.4.3'
 //    implementation 'com.firebaseui:firebase-ui-database:4.1.0'
+
+    implementation 'com.android.support:recyclerview-v7:+'
+
+    implementation 'com.github.bumptech.glide:glide:3.8.0'
+//    annotationProcessor 'com.github.bumptech.glide:compiler:3.8.0'
+    implementation'com.firebaseui:firebase-ui-storage:2.0.1'
+
 
 
 

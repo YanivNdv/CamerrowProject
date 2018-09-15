@@ -5,6 +5,9 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseListAdapter;
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
@@ -37,13 +41,18 @@ public class PersonalFragment extends Fragment{
 
     private Button mAddPersonalBtn;
 
+    //maybe don't need
     private DatabaseReference mDatabaseUsers;
+    //used instead
+    private DatabaseReference mDatabasePersonal;
+
     private String user_id;
 
 
-    private ListView mPersonalListView;
+//    private ListView mPersonalListView;
+    private RecyclerView mPersonalRecyclerView;
 
-    private FirebaseListAdapter<PersonalObject> firebaseListAdapter;
+//    private FirebaseListAdapter<PersonalObject> firebaseListAdapter;
 
     private double longitude;
     private double latitude;
@@ -65,32 +74,52 @@ public class PersonalFragment extends Fragment{
 
                 mAddPersonalBtn = (Button) rootView.findViewById(R.id.addPersonalBtn);
 
-
+                mDatabasePersonal = FirebaseDatabase.getInstance().getReference().child("Personal");
                 mDatabaseUsers = FirebaseDatabase.getInstance().getReference().child("Users");
                 user_id = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
 
-                mPersonalListView = (ListView) rootView.findViewById(R.id.personalListView);
+//                mPersonalListView = (ListView) rootView.findViewById(R.id.personalListView);
+                mPersonalRecyclerView = (RecyclerView) rootView.findViewById(R.id.personalRecyclerView);
+                mPersonalRecyclerView.setLayoutManager(new LinearLayoutManager(this.getActivity()));
+                mPersonalRecyclerView.addItemDecoration(new DividerItemDecoration(this.getActivity(), DividerItemDecoration.VERTICAL));
 
-
-
-                firebaseListAdapter = new FirebaseListAdapter<PersonalObject>(
-                        getActivity(),
+                FirebaseRecyclerAdapter<PersonalObject, MyViewHolder> adapter = new FirebaseRecyclerAdapter<PersonalObject, MyViewHolder>(
                         PersonalObject.class,
-                        android.R.layout.simple_list_item_1,
-                        mDatabaseUsers.child(user_id).child("personal")
-
-                ) {
+                        R.layout.personal_object,
+                        MyViewHolder.class,
+                        mDatabasePersonal.child(user_id)) {
                     @Override
-                    protected void populateView(View v, PersonalObject model, int position) {
-
-                        TextView textView = (TextView) v.findViewById(android.R.id.text1);
-                        textView.setText(model.getName());
+                    protected void populateViewHolder(MyViewHolder viewHolder, PersonalObject model, int position) {
+                        viewHolder.setName(model.getName());
+//                        viewHolder.setImage(model.getImage(),getContext());
 
                     }
                 };
 
-                mPersonalListView.setAdapter(firebaseListAdapter);
+                mPersonalRecyclerView.setAdapter(adapter);
+
+
+//
+//
+//                firebaseListAdapter = new FirebaseListAdapter<PersonalObject>(
+//                        getActivity(),
+//                        PersonalObject.class,
+//                        android.R.layout.simple_list_item_1,
+////                        mDatabaseUsers.child(user_id).child("personal")
+//                        mDatabasePersonal.child(user_id)
+//
+//                ) {
+//                    @Override
+//                    protected void populateView(View v, PersonalObject model, int position) {
+//
+//                        TextView textView = (TextView) v.findViewById(android.R.id.text1);
+//                        textView.setText(model.getName());
+//
+//                    }
+//                };
+//
+//                mPersonalListView.setAdapter(firebaseListAdapter);
 
 
             }
