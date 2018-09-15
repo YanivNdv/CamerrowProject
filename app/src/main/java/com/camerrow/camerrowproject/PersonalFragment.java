@@ -90,14 +90,33 @@ public class PersonalFragment extends Fragment{
                         MyViewHolder.class,
                         mDatabasePersonal.child(user_id)) {
                     @Override
-                    protected void populateViewHolder(MyViewHolder viewHolder, PersonalObject model, int position) {
+                    protected void populateViewHolder(final MyViewHolder viewHolder, PersonalObject model, int position) {
+
+                        final String personalObjectKey = getRef(position).getKey();
                         viewHolder.setName(model.getName());
 //                        viewHolder.setImage(model.getImage(),getContext());
+                        viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Toast.makeText(getActivity(), "Clicked on " + personalObjectKey, Toast.LENGTH_SHORT).show();
+                            }
+                        });
+
+                        viewHolder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                            @Override
+                            public boolean onLongClick(View v) {
+//                                Toast.makeText(getActivity(), "Long Clicked on " + personalObjectKey, Toast.LENGTH_SHORT).show();
+                                mDatabasePersonal.child(user_id).child(personalObjectKey).removeValue();
+                                return true;
+                            }
+                        });
+
 
                     }
                 };
 
                 mPersonalRecyclerView.setAdapter(adapter);
+
 
 
 //

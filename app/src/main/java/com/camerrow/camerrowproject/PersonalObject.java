@@ -7,13 +7,15 @@ public class PersonalObject {
     private double latitude;
     private double longitude;
 
+    public PersonalObject(){}
+
     public PersonalObject(String name, double latitude, double longitude) {
         this.name = name;
         this.latitude = latitude;
         this.longitude = longitude;
     }
 
-    public PersonalObject(){}
+
 
     public String getName() {
         return name;

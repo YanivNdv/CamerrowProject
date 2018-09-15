@@ -17,6 +17,7 @@ public class MyViewHolder extends RecyclerView.ViewHolder {
 
     private ImageView image;
     private TextView name;
+    
 
     public MyViewHolder(@NonNull View itemView) {
         super(itemView);
@@ -33,4 +34,6 @@ public class MyViewHolder extends RecyclerView.ViewHolder {
         Glide.with(context).using(new FirebaseImageLoader()).load(ref).into(image);
         this.image = image;
     }
+
+
 }
