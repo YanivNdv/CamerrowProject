@@ -7,7 +7,7 @@
 
 
     <ImageView
-        android:id="@+id/friendsObjectImage"
+        android:id="@+id/personalObjectImage"
         android:layout_width="132dp"
         android:layout_height="69dp"
         android:src="@drawable/common_google_signin_btn_icon_dark" />
@@ -19,11 +19,18 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/personalObjectName"
+            android:id="@+id/friendObjectName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:text="Name" />
+
+        <TextView
+            android:id="@+id/friendObjectUsername"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Username" />
 
     </LinearLayout>
 

@@ -1,35 +1,27 @@
 package com.camerrow.camerrowproject;
 
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.firebase.ui.database.FirebaseListAdapter;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
-import java.util.ArrayList;
 
 
 /**
@@ -69,7 +61,6 @@ public class PersonalFragment extends Fragment{
 
 
             if(rootView == null) {
-                Log.d("rootView", "is null");
                 rootView = inflater.inflate(R.layout.fragment_personal, container, false);
 
                 mAddPersonalBtn = (Button) rootView.findViewById(R.id.addPersonalBtn);
@@ -84,13 +75,13 @@ public class PersonalFragment extends Fragment{
                 mPersonalRecyclerView.setLayoutManager(new LinearLayoutManager(this.getActivity()));
                 mPersonalRecyclerView.addItemDecoration(new DividerItemDecoration(this.getActivity(), DividerItemDecoration.VERTICAL));
 
-                FirebaseRecyclerAdapter<PersonalObject, MyViewHolder> adapter = new FirebaseRecyclerAdapter<PersonalObject, MyViewHolder>(
+                FirebaseRecyclerAdapter<PersonalObject, PersonalViewHolder> adapter = new FirebaseRecyclerAdapter<PersonalObject, PersonalViewHolder>(
                         PersonalObject.class,
                         R.layout.personal_object,
-                        MyViewHolder.class,
+                        PersonalViewHolder.class,
                         mDatabasePersonal.child(user_id)) {
                     @Override
-                    protected void populateViewHolder(final MyViewHolder viewHolder, PersonalObject model, int position) {
+                    protected void populateViewHolder(final PersonalViewHolder viewHolder, final PersonalObject model, int position) {
 
                         final String personalObjectKey = getRef(position).getKey();
                         viewHolder.setName(model.getName());
@@ -106,7 +97,21 @@ public class PersonalFragment extends Fragment{
                             @Override
                             public boolean onLongClick(View v) {
 //                                Toast.makeText(getActivity(), "Long Clicked on " + personalObjectKey, Toast.LENGTH_SHORT).show();
-                                mDatabasePersonal.child(user_id).child(personalObjectKey).removeValue();
+                                new AlertDialog.Builder(v.getRootView().getContext(),R.style.MyDialogTheme)
+                                        .setMessage("Are you sure you want to remove " + model.getName() + "?" )
+                                        .setTitle("Remove Location")
+                                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                                mDatabasePersonal.child(user_id).child(personalObjectKey).removeValue();
+                                            }
+                                        })
+                                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialog, int which) {
+                                            }
+                                        })
+                                        .show();
                                 return true;
                             }
                         });
