@@ -14,11 +14,33 @@
         <!--android:textSize="26sp"-->
         <!--android:textStyle="bold"/>-->
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <EditText
+            android:id="@+id/friendsSearchEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Search..." />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/friendsSearchRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+
+    </LinearLayout>
 
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/friendsRecyclerView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="470dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true" />
+
+
 
 </RelativeLayout>
