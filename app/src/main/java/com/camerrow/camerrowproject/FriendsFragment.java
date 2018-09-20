@@ -243,7 +243,6 @@ public class FriendsFragment extends Fragment {
                 });
 
                 mFriendsSearchRecyclerView.setAdapter(searchAdapter);
-//                searchAdapter.setItemClickListener(this);
 
 
             }
