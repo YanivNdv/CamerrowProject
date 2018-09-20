@@ -22,6 +22,7 @@ import org.w3c.dom.Text;
 
 public class RegisterActivity extends AppCompatActivity {
 
+    private EditText mFullNameTV;
     private EditText mUsernameTV;
     private EditText mEmailTV;
     private EditText mPasswordTV;
@@ -44,6 +45,7 @@ public class RegisterActivity extends AppCompatActivity {
 
         mProgressDialog = new ProgressDialog(this);
 
+        mFullNameTV = (EditText) findViewById(R.id.rFullNameTF);
         mUsernameTV = (EditText) findViewById(R.id.rUsernameTF);
         mEmailTV = (EditText) findViewById(R.id.rEmailTF);
         mPasswordTV = (EditText) findViewById(R.id.rPasswordTF);
@@ -59,6 +61,8 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void startRegister() {
+
+        final String fullName = mFullNameTV.getText().toString().trim();
         final String userName = mUsernameTV.getText().toString().trim();
         final String email = mEmailTV.getText().toString().trim();
         String password = mPasswordTV.getText().toString().trim();
@@ -77,6 +81,7 @@ public class RegisterActivity extends AppCompatActivity {
                              //db reference to the new user
                              DatabaseReference current_user_db = mDatabaseUsers.child(user_id);
                              //add details of the new user
+                             current_user_db.child("name").setValue(fullName);
                              current_user_db.child("username").setValue(userName);
                              current_user_db.child("email").setValue(email);
                              current_user_db.child("image").setValue("default");

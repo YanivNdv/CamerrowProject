@@ -6,6 +6,8 @@ public class CamerrowUser {
     private String name;
     private String username;
     private String profilePicture;
+    private String databaseKey;
+
 
     public CamerrowUser() {
     }
@@ -16,6 +18,17 @@ public class CamerrowUser {
         this.username = username;
         this.profilePicture = profilePicture;
     }
+
+    public String getDatabaseKey() {
+        return databaseKey;
+    }
+
+    public void setDatabaseKey(String databaseKey) {
+        this.databaseKey = databaseKey;
+    }
+
+
+
 
     public String getEmail() {
         return email;

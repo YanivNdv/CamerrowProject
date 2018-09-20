@@ -14,7 +14,6 @@ import com.google.firebase.storage.StorageReference;
 
 public class FriendsViewHolder  extends RecyclerView.ViewHolder{
 
-
     private ImageView image;
     private TextView name;
     private TextView username;

@@ -1,10 +1,13 @@
 package com.camerrow.camerrowproject;
 
 
+import android.app.Activity;
 import android.content.DialogInterface;
+import android.graphics.Canvas;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -15,7 +18,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
@@ -48,6 +54,7 @@ public class FriendsFragment extends Fragment {
     private ArrayList<CamerrowUser> camerrowUserArrayList;
 
     private SearchAdapter searchAdapter;
+    private LinearLayout mSearchLinearLayout;
 
 
 
@@ -67,8 +74,20 @@ public class FriendsFragment extends Fragment {
         if (rootView == null) {
             rootView = inflater.inflate(R.layout.fragment_friends, container, false);
 
+            mSearchLinearLayout = (LinearLayout) rootView.findViewById(R.id.searchLinearLayout);
+            mSearchLinearLayout.bringToFront();
+
+
             mFriendsSearchEditText = (EditText) rootView.findViewById(R.id.friendsSearchEditText);
             mFriendsSearchRecyclerView = (RecyclerView) rootView.findViewById(R.id.friendsSearchRecyclerView);
+
+            //search items divider
+            DividerItemDecoration myDivider = new DividerItemDecoration(this.getActivity(), DividerItemDecoration.VERTICAL);
+            myDivider.setDrawable(ContextCompat.getDrawable(this.getActivity(), R.drawable.costume_divider));
+
+
+            mFriendsSearchRecyclerView.addItemDecoration(myDivider );
+
 
             camerrowUserArrayList = new ArrayList<>();
 
@@ -83,6 +102,8 @@ public class FriendsFragment extends Fragment {
             mFriendsRecyclerView = (RecyclerView) rootView.findViewById(R.id.friendsRecyclerView);
             mFriendsRecyclerView.setLayoutManager(new LinearLayoutManager(this.getActivity()));
             mFriendsRecyclerView.addItemDecoration(new DividerItemDecoration(this.getActivity(), DividerItemDecoration.VERTICAL));
+
+
 
             FirebaseRecyclerAdapter<FriendObject, FriendsViewHolder> adapter = new FirebaseRecyclerAdapter<FriendObject, FriendsViewHolder>(
                     FriendObject.class,
@@ -144,7 +165,6 @@ public class FriendsFragment extends Fragment {
                 @Override
                 public void afterTextChanged(Editable s) {
                     if(!s.toString().isEmpty()) {
-                        Log.d("searched", s.toString());
                         setAdapter(s.toString());
                     }
                     else {
@@ -154,7 +174,10 @@ public class FriendsFragment extends Fragment {
                 }
             });
 
+
+
         }
+
 
             // Inflate the layout for this fragment
             return rootView;
@@ -185,6 +208,7 @@ public class FriendsFragment extends Fragment {
                     camerrowUser.setUsername(snapshot.child("username").getValue().toString());
                     camerrowUser.setEmail(snapshot.child("email").getValue().toString());
                     camerrowUser.setProfilePicture(snapshot.child("image").getValue().toString());
+                    camerrowUser.setDatabaseKey(uid);
 
                     if(camerrowUser.getName().toLowerCase().contains(searchedString.toLowerCase())){
                         camerrowUserArrayList.add(camerrowUser);
@@ -201,16 +225,63 @@ public class FriendsFragment extends Fragment {
 
                 }
 
-                searchAdapter = new SearchAdapter(getActivity(), camerrowUserArrayList);
+                searchAdapter = new SearchAdapter(getActivity(), camerrowUserArrayList, new ItemClickListener() {
+                    @Override
+                    public void onClick(View view, int position, boolean isLongClick) {
+                        if(!isLongClick){
+                            if(camerrowUserArrayList.get(position).getDatabaseKey() != user_id)
+                                addFriend(camerrowUserArrayList.get(position));
+                        } else {
+                            removeFriend(camerrowUserArrayList.get(position));
+                        }
+                        mFriendsSearchEditText.setText("");
+                        hideSoftKeyboard(getActivity());
+
+
+
+                    }
+                });
+
                 mFriendsSearchRecyclerView.setAdapter(searchAdapter);
+//                searchAdapter.setItemClickListener(this);
+
 
             }
+
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
         });
+
+    }
+
+    private void removeFriend(CamerrowUser camerrowUser) {
+        mDatabseFriends.child(user_id).child(camerrowUser.getDatabaseKey()).removeValue();
+
+    }
+
+    private void addFriend(CamerrowUser camerrowUser) {
+
+        DatabaseReference friendDatabase = mDatabseFriends.child(user_id).child(camerrowUser.getDatabaseKey());
+
+        friendDatabase.child("key").setValue(camerrowUser.getDatabaseKey());
+        friendDatabase.child("name").setValue(camerrowUser.getName());
+        friendDatabase.child("username").setValue(camerrowUser.getUsername());
+        friendDatabase.child("email").setValue(camerrowUser.getEmail());
+        friendDatabase.child("picture").setValue(camerrowUser.getProfilePicture());
+
+
+
+    }
+
+    public static void hideSoftKeyboard(Activity activity) {
+        InputMethodManager inputMethodManager =
+                (InputMethodManager) activity.getSystemService(
+                        Activity.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(
+                activity.getCurrentFocus().getWindowToken(), 0);
     }
 
 

@@ -3,8 +3,11 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
+    android:background="#ffffff"
     android:padding="10dp"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+
+<!--android:paddingTop="100dp"-->
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/searchItemProfileImage"
