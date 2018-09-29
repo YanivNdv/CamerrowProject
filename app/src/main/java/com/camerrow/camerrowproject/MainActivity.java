@@ -1,5 +1,6 @@
 package com.camerrow.camerrowproject;
 
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -16,22 +17,36 @@ import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v4.view.MenuCompat;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import android.Manifest;
 import com.camerrow.camerrowproject.services.LocationMonitoringService;
 import com.crashlytics.android.Crashlytics;
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.firebase.auth.FirebaseAuth;
@@ -40,8 +55,11 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.miguelcatalan.materialsearchview.MaterialSearchView;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -58,6 +76,9 @@ public class MainActivity extends AppCompatActivity implements PersonalDialog.Pe
     private boolean mAlreadyStartedService = false;
     private TextView mMsgView;
 
+    //Toolbar
+    private Toolbar mToolbar;
+
 
     //Fragments
     private ViewPager mViewPager;
@@ -69,9 +90,15 @@ public class MainActivity extends AppCompatActivity implements PersonalDialog.Pe
     private FirebaseAuth.AuthStateListener mAuthListener;
     private DatabaseReference mDatabaseUsers;
     private DatabaseReference mDatabasePersonal;
-
+    private DatabaseReference databaseReference;
+    private DatabaseReference mDatabseFriends;
 
     private String user_id;
+
+    private RecyclerView mFriendsSearchRecyclerView;
+    private ArrayList<CamerrowUser> camerrowUserArrayList;
+    private SearchAdapter searchAdapter;
+    private LinearLayout mSearchLinearLayout;
 
 
 
@@ -81,8 +108,33 @@ public class MainActivity extends AppCompatActivity implements PersonalDialog.Pe
         super.onCreate(savedInstanceState);
         Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_main);
-        //remove border between action bar and app bar
+        //remove border between action bar and app bar (return it if using action bar
+//        getSupportActionBar().setElevation(0);
+
+
+        //Toolbar
+        mToolbar = (Toolbar) findViewById(R.id.main_toolbar);
+        setSupportActionBar(mToolbar);
         getSupportActionBar().setElevation(0);
+        getSupportActionBar().setTitle("Camerrow");
+//        mToolbar.inflateMenu(R.menu.main_menu);
+
+//        //search items divider - Not Working
+//        DividerItemDecoration myDivider = new DividerItemDecoration(MainActivity.this, DividerItemDecoration.VERTICAL);
+//        myDivider.setDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.costume_divider));
+
+        mFriendsSearchRecyclerView = (RecyclerView) findViewById(R.id.searchRecyclerView);
+        mFriendsSearchRecyclerView.setHasFixedSize(true);
+        mFriendsSearchRecyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this));
+        mFriendsSearchRecyclerView.addItemDecoration(new DividerItemDecoration(MainActivity.this,LinearLayoutManager.VERTICAL));
+        camerrowUserArrayList = new ArrayList<>();
+
+        mSearchLinearLayout = (LinearLayout) findViewById(R.id.searchLinearLayout);
+        mSearchLinearLayout.bringToFront();
+
+
+
+
 
 
         mMsgView = (TextView) findViewById(R.id.msgView);
@@ -100,7 +152,10 @@ public class MainActivity extends AppCompatActivity implements PersonalDialog.Pe
             mTabLayout.setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
         }
 
+        //Firebase init
         mAuth = FirebaseAuth.getInstance();
+        databaseReference = FirebaseDatabase.getInstance().getReference();
+        mDatabseFriends = FirebaseDatabase.getInstance().getReference().child("Friends");
         mDatabaseUsers = FirebaseDatabase.getInstance().getReference().child("Users");
         mDatabaseUsers.keepSynced(true);
 
@@ -119,9 +174,9 @@ public class MainActivity extends AppCompatActivity implements PersonalDialog.Pe
             }
         };
 
+
         if(mAuth.getCurrentUser()!=null)
             user_id = mAuth.getCurrentUser().getUid();
-
 
 
         startService(new Intent(MainActivity.this, LocationMonitoringService.class));
@@ -148,7 +203,39 @@ public class MainActivity extends AppCompatActivity implements PersonalDialog.Pe
 
 //        sendDataToFragment();
 
+
+
+
     }
+
+
+    private void removeFriend(CamerrowUser camerrowUser) {
+        mDatabseFriends.child(user_id).child(camerrowUser.getDatabaseKey()).removeValue();
+
+    }
+
+    private void addFriend(CamerrowUser camerrowUser) {
+
+        DatabaseReference friendDatabase = mDatabseFriends.child(user_id).child(camerrowUser.getDatabaseKey());
+
+        friendDatabase.child("key").setValue(camerrowUser.getDatabaseKey());
+        friendDatabase.child("name").setValue(camerrowUser.getName());
+        friendDatabase.child("username").setValue(camerrowUser.getUsername());
+        friendDatabase.child("email").setValue(camerrowUser.getEmail());
+        friendDatabase.child("picture").setValue(camerrowUser.getProfilePicture());
+
+
+
+    }
+
+    public static void hideSoftKeyboard(Activity activity) {
+        InputMethodManager inputMethodManager =
+                (InputMethodManager) activity.getSystemService(
+                        Activity.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(
+                activity.getCurrentFocus().getWindowToken(), 0);
+    }
+
 
 //    private void sendDataToFragment() {
 //        Bundle bundle = new Bundle();
@@ -164,10 +251,38 @@ public class MainActivity extends AppCompatActivity implements PersonalDialog.Pe
         mDatabaseUsers.child(user_id).child("location").child("latitude").setValue(latitude);
     }
 
+
+
     // Options Menu Creator
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main_menu, menu);
+        MenuItem item = menu.findItem(R.id.action_search);
+        //** For MaterialSearchView
+        MaterialSearchView searchView = (MaterialSearchView) findViewById(R.id.search_view);
+        searchView.setMenuItem(item);
+        //**
+//        **For SearchView (also change in menu.xml**
+//        SearchView searchView = (SearchView) MenuItemCompat.getActionView(item);
+
+        searchView.setOnQueryTextListener(new MaterialSearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                if(!s.isEmpty())
+                    setAdapter(s);
+                else{
+                    camerrowUserArrayList.clear();
+                    mFriendsSearchRecyclerView.removeAllViews();
+                }
+
+                return false;
+            }
+        });
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -501,6 +616,78 @@ public class MainActivity extends AppCompatActivity implements PersonalDialog.Pe
 
 
     }
+
+    //search data
+    private void setAdapter(final String searchedString) {
+
+
+
+        databaseReference.child("Users").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                camerrowUserArrayList.clear();
+                mFriendsSearchRecyclerView.removeAllViews();
+
+                int counter = 0;
+
+                for (DataSnapshot snapshot: dataSnapshot.getChildren()) {
+
+                    CamerrowUser camerrowUser = new CamerrowUser();
+                    String uid = snapshot.getKey();
+                    camerrowUser.setName(snapshot.child("name").getValue().toString());
+                    camerrowUser.setUsername(snapshot.child("username").getValue().toString());
+                    camerrowUser.setEmail(snapshot.child("email").getValue().toString());
+                    camerrowUser.setProfilePicture(snapshot.child("image").getValue().toString());
+                    camerrowUser.setDatabaseKey(uid);
+
+                    if(camerrowUser.getName().toLowerCase().contains(searchedString.toLowerCase())){
+                        camerrowUserArrayList.add(camerrowUser);
+                        counter++;
+
+                    } else if (camerrowUser.getUsername().toLowerCase().contains(searchedString.toLowerCase())) {
+                        camerrowUserArrayList.add(camerrowUser);
+                        counter++;
+
+                    }
+
+                    if (counter == 15)
+                        break;
+
+                }
+
+                searchAdapter = new SearchAdapter(MainActivity.this, camerrowUserArrayList, new ItemClickListener() {
+                    @Override
+                    public void onClick(View view, int position, boolean isLongClick) {
+                        if(!isLongClick){
+                            if(!camerrowUserArrayList.get(position).getDatabaseKey().equals(user_id))
+                                addFriend(camerrowUserArrayList.get(position));
+                        } else {
+                            removeFriend(camerrowUserArrayList.get(position));
+                        }
+                        camerrowUserArrayList.clear();
+                        mFriendsSearchRecyclerView.removeAllViews();
+                        hideSoftKeyboard(MainActivity.this);
+
+
+
+                    }
+                });
+
+                mFriendsSearchRecyclerView.setAdapter(searchAdapter);
+
+
+            }
+
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+    }
+
 
 
 

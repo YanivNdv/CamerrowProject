@@ -27,9 +27,6 @@ public class CamerrowUser {
         this.databaseKey = databaseKey;
     }
 
-
-
-
     public String getEmail() {
         return email;
     }

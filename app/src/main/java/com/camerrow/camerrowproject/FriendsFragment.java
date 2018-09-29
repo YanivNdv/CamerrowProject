@@ -49,12 +49,7 @@ public class FriendsFragment extends Fragment {
     private String user_id;
     private RecyclerView mFriendsRecyclerView;
 
-    private EditText mFriendsSearchEditText;
-    private RecyclerView mFriendsSearchRecyclerView;
-    private ArrayList<CamerrowUser> camerrowUserArrayList;
 
-    private SearchAdapter searchAdapter;
-    private LinearLayout mSearchLinearLayout;
 
 
 
@@ -74,29 +69,9 @@ public class FriendsFragment extends Fragment {
         if (rootView == null) {
             rootView = inflater.inflate(R.layout.fragment_friends, container, false);
 
-            mSearchLinearLayout = (LinearLayout) rootView.findViewById(R.id.searchLinearLayout);
-            mSearchLinearLayout.bringToFront();
-
-
-            mFriendsSearchEditText = (EditText) rootView.findViewById(R.id.friendsSearchEditText);
-            mFriendsSearchRecyclerView = (RecyclerView) rootView.findViewById(R.id.friendsSearchRecyclerView);
-
-            //search items divider
-            DividerItemDecoration myDivider = new DividerItemDecoration(this.getActivity(), DividerItemDecoration.VERTICAL);
-            myDivider.setDrawable(ContextCompat.getDrawable(this.getActivity(), R.drawable.costume_divider));
-
-
-            mFriendsSearchRecyclerView.addItemDecoration(myDivider );
-
-
-            camerrowUserArrayList = new ArrayList<>();
-
             databaseReference = FirebaseDatabase.getInstance().getReference();
             firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-
-
             mDatabseFriends = FirebaseDatabase.getInstance().getReference().child("Friends");
-
             user_id = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
             mFriendsRecyclerView = (RecyclerView) rootView.findViewById(R.id.friendsRecyclerView);
@@ -145,37 +120,6 @@ public class FriendsFragment extends Fragment {
 
             mFriendsRecyclerView.setAdapter(adapter);
 
-            //search func
-
-            mFriendsSearchRecyclerView.setHasFixedSize(true);
-            mFriendsSearchRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-            mFriendsSearchRecyclerView.addItemDecoration(new DividerItemDecoration(this.getActivity(),LinearLayoutManager.VERTICAL));
-
-            mFriendsSearchEditText.addTextChangedListener(new TextWatcher() {
-                @Override
-                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-                }
-
-                @Override
-                public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-                }
-
-                @Override
-                public void afterTextChanged(Editable s) {
-                    if(!s.toString().isEmpty()) {
-                        setAdapter(s.toString());
-                    }
-                    else {
-                        camerrowUserArrayList.clear();
-                        mFriendsSearchRecyclerView.removeAllViews();
-                    }
-                }
-            });
-
-
-
         }
 
 
@@ -186,102 +130,5 @@ public class FriendsFragment extends Fragment {
 
 
     }
-
-    private void setAdapter(final String searchedString) {
-
-
-
-        databaseReference.child("Users").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                camerrowUserArrayList.clear();
-                mFriendsSearchRecyclerView.removeAllViews();
-
-                int counter = 0;
-
-                for (DataSnapshot snapshot: dataSnapshot.getChildren()) {
-
-                    CamerrowUser camerrowUser = new CamerrowUser();
-                    String uid = snapshot.getKey();
-                    camerrowUser.setName(snapshot.child("name").getValue().toString());
-                    camerrowUser.setUsername(snapshot.child("username").getValue().toString());
-                    camerrowUser.setEmail(snapshot.child("email").getValue().toString());
-                    camerrowUser.setProfilePicture(snapshot.child("image").getValue().toString());
-                    camerrowUser.setDatabaseKey(uid);
-
-                    if(camerrowUser.getName().toLowerCase().contains(searchedString.toLowerCase())){
-                        camerrowUserArrayList.add(camerrowUser);
-                        counter++;
-
-                    } else if (camerrowUser.getUsername().toLowerCase().contains(searchedString.toLowerCase())) {
-                        camerrowUserArrayList.add(camerrowUser);
-                        counter++;
-
-                    }
-
-                    if (counter == 15)
-                        break;
-
-                }
-
-                searchAdapter = new SearchAdapter(getActivity(), camerrowUserArrayList, new ItemClickListener() {
-                    @Override
-                    public void onClick(View view, int position, boolean isLongClick) {
-                        if(!isLongClick){
-                            if(camerrowUserArrayList.get(position).getDatabaseKey() != user_id)
-                                addFriend(camerrowUserArrayList.get(position));
-                        } else {
-                            removeFriend(camerrowUserArrayList.get(position));
-                        }
-                        mFriendsSearchEditText.setText("");
-                        hideSoftKeyboard(getActivity());
-
-
-
-                    }
-                });
-
-                mFriendsSearchRecyclerView.setAdapter(searchAdapter);
-
-
-            }
-
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-
-    }
-
-    private void removeFriend(CamerrowUser camerrowUser) {
-        mDatabseFriends.child(user_id).child(camerrowUser.getDatabaseKey()).removeValue();
-
-    }
-
-    private void addFriend(CamerrowUser camerrowUser) {
-
-        DatabaseReference friendDatabase = mDatabseFriends.child(user_id).child(camerrowUser.getDatabaseKey());
-
-        friendDatabase.child("key").setValue(camerrowUser.getDatabaseKey());
-        friendDatabase.child("name").setValue(camerrowUser.getName());
-        friendDatabase.child("username").setValue(camerrowUser.getUsername());
-        friendDatabase.child("email").setValue(camerrowUser.getEmail());
-        friendDatabase.child("picture").setValue(camerrowUser.getProfilePicture());
-
-
-
-    }
-
-    public static void hideSoftKeyboard(Activity activity) {
-        InputMethodManager inputMethodManager =
-                (InputMethodManager) activity.getSystemService(
-                        Activity.INPUT_METHOD_SERVICE);
-        inputMethodManager.hideSoftInputFromWindow(
-                activity.getCurrentFocus().getWindowToken(), 0);
-    }
-
 
 }
