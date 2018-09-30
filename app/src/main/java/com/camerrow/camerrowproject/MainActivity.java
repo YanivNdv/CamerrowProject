@@ -65,7 +65,7 @@ import java.util.Map;
 
 import io.fabric.sdk.android.Fabric;
 
-public class MainActivity extends AppCompatActivity implements PersonalDialog.PersonalDialogListener{
+public class MainActivity extends AppCompatActivity implements PersonalDialog.PersonalDialogListener {
 
     private static final String TAG = MainActivity.class.getSimpleName();
     /**
@@ -261,9 +261,11 @@ public class MainActivity extends AppCompatActivity implements PersonalDialog.Pe
         //** For MaterialSearchView
         MaterialSearchView searchView = (MaterialSearchView) findViewById(R.id.search_view);
         searchView.setMenuItem(item);
+
         //**
 //        **For SearchView (also change in menu.xml**
 //        SearchView searchView = (SearchView) MenuItemCompat.getActionView(item);
+
 
         searchView.setOnQueryTextListener(new MaterialSearchView.OnQueryTextListener() {
             @Override
@@ -283,6 +285,8 @@ public class MainActivity extends AppCompatActivity implements PersonalDialog.Pe
                 return false;
             }
         });
+
+
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -293,7 +297,6 @@ public class MainActivity extends AppCompatActivity implements PersonalDialog.Pe
 
         if (item.getItemId() == R.id.action_logout)
             logout();
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -659,6 +662,8 @@ public class MainActivity extends AppCompatActivity implements PersonalDialog.Pe
                 searchAdapter = new SearchAdapter(MainActivity.this, camerrowUserArrayList, new ItemClickListener() {
                     @Override
                     public void onClick(View view, int position, boolean isLongClick) {
+                        if(mViewPager.getCurrentItem()!=1)
+                            mViewPager.setCurrentItem(1);
                         if(!isLongClick){
                             if(!camerrowUserArrayList.get(position).getDatabaseKey().equals(user_id))
                                 addFriend(camerrowUserArrayList.get(position));
@@ -687,7 +692,6 @@ public class MainActivity extends AppCompatActivity implements PersonalDialog.Pe
         });
 
     }
-
 
 
 

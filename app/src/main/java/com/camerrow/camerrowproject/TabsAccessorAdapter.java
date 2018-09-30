@@ -23,9 +23,9 @@ public class TabsAccessorAdapter extends FragmentPagerAdapter{
                 FriendsFragment friendsFragment  = new FriendsFragment();
                 return friendsFragment;
 
-            case 2:
-                PlacesFragment placesFragment = new PlacesFragment();
-                return placesFragment;
+//            case 2:
+//                PlacesFragment placesFragment = new PlacesFragment();
+//                return placesFragment;
 
             default:
                 return null;
@@ -34,7 +34,7 @@ public class TabsAccessorAdapter extends FragmentPagerAdapter{
 
     @Override
     public int getCount() {
-        return 3;
+        return 2;
     }
 
     @Nullable
@@ -46,8 +46,8 @@ public class TabsAccessorAdapter extends FragmentPagerAdapter{
                 return "Personal";
             case 1:
                 return "Friends";
-            case 2:
-                return "Places";
+//            case 2:
+//                return "Places";
             default:
                 return null;
         }
