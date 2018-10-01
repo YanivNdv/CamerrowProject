@@ -17,6 +17,8 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import org.w3c.dom.Text;
 
@@ -31,6 +33,7 @@ public class RegisterActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
     private DatabaseReference mDatabaseUsers;
+    private StorageReference mStorageRef;
 
     private ProgressDialog mProgressDialog;
 
@@ -42,6 +45,7 @@ public class RegisterActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
         mDatabaseUsers = FirebaseDatabase.getInstance().getReference().child("Users");
+        mStorageRef = FirebaseStorage.getInstance().getReference();
 
         mProgressDialog = new ProgressDialog(this);
 
@@ -80,11 +84,14 @@ public class RegisterActivity extends AppCompatActivity {
                              String user_id = mAuth.getCurrentUser().getUid();
                              //db reference to the new user
                              DatabaseReference current_user_db = mDatabaseUsers.child(user_id);
+                             StorageReference ImageRef = mStorageRef.child("ProfileImages").child(user_id);
+                             String defaultProfileImageUri = "https://firebasestorage.googleapis.com/v0/b/camerrow-project.appspot.com/o/ProfileImages%2Fdefault_profile_image.png?alt=media&token=9c11f8bb-dda9-495e-89d6-b2b3a2e241e5";
+
                              //add details of the new user
                              current_user_db.child("name").setValue(fullName);
                              current_user_db.child("username").setValue(userName);
                              current_user_db.child("email").setValue(email);
-                             current_user_db.child("image").setValue("default");
+                             current_user_db.child("image").setValue(defaultProfileImageUri);
                              //dismiss progress dialog
                              mProgressDialog.dismiss();
 

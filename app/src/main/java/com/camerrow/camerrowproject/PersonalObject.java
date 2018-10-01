@@ -4,6 +4,7 @@ import android.location.Location;
 
 public class PersonalObject {
     private String name;
+    private String image;
     private double latitude;
     private double longitude;
 
@@ -16,6 +17,13 @@ public class PersonalObject {
     }
 
 
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
 
     public String getName() {
         return name;

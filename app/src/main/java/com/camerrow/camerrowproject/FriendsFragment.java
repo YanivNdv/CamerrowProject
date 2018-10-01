@@ -50,13 +50,6 @@ public class FriendsFragment extends Fragment {
     private RecyclerView mFriendsRecyclerView;
 
 
-
-
-
-
-
-
-
     public FriendsFragment() {
         // Required empty public constructor
     }
@@ -91,6 +84,18 @@ public class FriendsFragment extends Fragment {
                     final String friendObjectKey = getRef(position).getKey();
                     viewHolder.setName(model.getName());
                     viewHolder.setUsername(model.getUsername());
+                    viewHolder.setImage(model.getImage(),getContext());
+
+
+
+
+
+                    viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Toast.makeText(getActivity(), model.getKey(),Toast.LENGTH_SHORT).show();
+                        }
+                    });
 
                     viewHolder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
                         @Override
@@ -118,7 +123,9 @@ public class FriendsFragment extends Fragment {
                 }
             };
 
+
             mFriendsRecyclerView.setAdapter(adapter);
+
 
         }
 

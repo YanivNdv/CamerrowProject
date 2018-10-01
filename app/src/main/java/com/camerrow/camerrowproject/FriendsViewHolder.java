@@ -14,7 +14,7 @@ import com.google.firebase.storage.StorageReference;
 
 public class FriendsViewHolder  extends RecyclerView.ViewHolder{
 
-    private ImageView image;
+    ImageView image;
     private TextView name;
     private TextView username;
 
@@ -36,12 +36,20 @@ public class FriendsViewHolder  extends RecyclerView.ViewHolder{
 
 
     public void setImage(String i , Context context) {
-        StorageReference ref = FirebaseStorage.getInstance().getReference().child(i);
-        Glide.with(context).using(new FirebaseImageLoader()).load(ref).into(image);
+    //        StorageReference ref = FirebaseStorage.getInstance().getReference().child(i);
+    //        Glide.with(context).using(new FirebaseImageLoader()).load(ref).into(image);
         this.image = image;
     }
 
+    public ImageView getImage() {
+        return image;
+    }
 
+    public TextView getName() {
+        return name;
+    }
 
-
+    public TextView getUsername() {
+        return username;
+    }
 }

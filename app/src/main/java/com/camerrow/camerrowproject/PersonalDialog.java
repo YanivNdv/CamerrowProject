@@ -22,10 +22,15 @@ public class PersonalDialog extends AppCompatDialogFragment{
     private PersonalDialogListener personalDialogListener;
     private double locationLatitude;
     private double locationLongitude;
+    private String user_id;
 
-    public PersonalDialog(double locationLatitude, double locationLongitude) {
+    String defaultProfileImageUri = "https://firebasestorage.googleapis.com/v0/b/camerrow-project.appspot.com/o/ProfileImages%2Fdefault_profile_image.png?alt=media&token=9c11f8bb-dda9-495e-89d6-b2b3a2e241e5";
+
+
+    public PersonalDialog(String user_id, double locationLatitude, double locationLongitude) {
         this.locationLatitude = locationLatitude;
         this.locationLongitude = locationLongitude;
+        this.user_id = user_id;
     }
 
     @Override
@@ -50,6 +55,7 @@ public class PersonalDialog extends AppCompatDialogFragment{
 
                         PersonalObject personalObject = new PersonalObject();
                         personalObject.setName(personalDialogNameField.getText().toString());
+                        personalObject.setImage(defaultProfileImageUri);
                         personalObject.setLatitude(locationLatitude);
                         personalObject.setLongitude(locationLongitude);
                         personalDialogListener.sendBack(personalObject);

@@ -9,6 +9,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -85,7 +86,7 @@ public class PersonalFragment extends Fragment{
 
                         final String personalObjectKey = getRef(position).getKey();
                         viewHolder.setName(model.getName());
-//                        viewHolder.setImage(model.getImage(),getContext());
+                        viewHolder.setImage(model.getImage(),user_id, position, getActivity());
                         viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -175,7 +176,7 @@ public class PersonalFragment extends Fragment{
 
             }
         });
-        PersonalDialog personalDialog = new PersonalDialog(latitude,longitude);
+        PersonalDialog personalDialog = new PersonalDialog(user_id,latitude,longitude);
         personalDialog.show(getFragmentManager(), "PersonalDialog");
     }
 

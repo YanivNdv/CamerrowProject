@@ -5,18 +5,29 @@ public class FriendObject {
     private String name;
     private String username;
     private String key;
+    private String image;
     private double latitude;
     private double longitude;
 
-    public FriendObject(String name, String username, String key, double latitude, double longitude) {
+    public FriendObject(String name, String username, String key, String image, double latitude, double longitude) {
         this.name = name;
         this.username = username;
+        this.image = image;
         this.key = key;
         this.latitude = latitude;
         this.longitude = longitude;
     }
 
     public FriendObject() {
+    }
+
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 
     public double getLatitude() {

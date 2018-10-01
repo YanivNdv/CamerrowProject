@@ -614,6 +614,8 @@ public class MainActivity extends AppCompatActivity implements PersonalDialog.Pe
         mPersonalObjectMap.put("name",personalObject.getName());
         mPersonalObjectMap.put("latitude",personalObject.getLatitude());
         mPersonalObjectMap.put("longitude",personalObject.getLongitude());
+        mPersonalObjectMap.put("image",personalObject.getImage());
+
 //        mDatabaseUsers.child(user_id).child("personal").push().setValue(mPersonalObjectMap);
         mDatabasePersonal.child(user_id).push().setValue(mPersonalObjectMap);
 
