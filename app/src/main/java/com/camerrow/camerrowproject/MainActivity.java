@@ -297,7 +297,17 @@ public class MainActivity extends AppCompatActivity implements PersonalDialog.Pe
 
         if (item.getItemId() == R.id.action_logout)
             logout();
+
+        if (item.getItemId() == R.id.action_myProfile)
+            startMyProfileActivity();
         return super.onOptionsItemSelected(item);
+    }
+
+    private void startMyProfileActivity() {
+        Intent myProfileIntent = new Intent(MainActivity.this, MyProfileActivity.class );
+        myProfileIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(myProfileIntent);
+
     }
 
     private void checkUserExist() {

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MyProfileActivity">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?android:attr/actionBarSize"
+        android:background="@color/colorPrimary"
+        app:titleTextColor="@color/colorAccent"
+        android:elevation="4dp"
+        app:theme="@style/ThemeOverlay.AppCompat"
+        app:navigationIcon="?android:attr/homeAsUpIndicator"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/myProfileImageView"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center"
+        android:layout_marginTop="98dp"
+        android:padding="2dp"
+        android:src="@mipmap/ic_launcher_round" />
+
+    <TextView
+        android:id="@+id/changeProfileImageTV"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="210dp"
+        android:text="Change Profile Image" />
+
+    <TextView
+        android:text="Name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="260dp" />
+
+    <EditText
+        android:id="@+id/changeNameField"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="280dp"
+        android:textSize="14sp"
+        android:text="Your Name"/>
+
+    <TextView
+        android:text="UserName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="320dp" />
+
+    <EditText
+        android:id="@+id/changeUsernameField"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="340dp"
+        android:textSize="14sp"
+        android:text="Your Username"/>
+
+    <TextView
+        android:text="Email"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="380dp" />
+
+    <EditText
+        android:id="@+id/changeEmailField"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="400dp"
+        android:textSize="14sp"
+        android:text="Your Email"/>
+
+
+
+</RelativeLayout>
