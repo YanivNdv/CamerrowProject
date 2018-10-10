@@ -26,7 +26,7 @@ public class PersonalViewHolder extends RecyclerView.ViewHolder {
     public PersonalViewHolder(@NonNull View itemView) {
         super(itemView);
         name = (TextView) itemView.findViewById(R.id.personalObjectName);
-        image = (ImageView) itemView.findViewById(R.id.friendsObjectImage);
+        image = (ImageView) itemView.findViewById(R.id.personalItemProfileImage);
     }
 
     public void setName(String name) {

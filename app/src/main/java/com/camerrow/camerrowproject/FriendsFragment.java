@@ -87,9 +87,6 @@ public class FriendsFragment extends Fragment {
                     viewHolder.setImage(model.getImage(),getContext());
 
 
-
-
-
                     viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {

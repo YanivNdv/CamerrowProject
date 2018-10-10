@@ -222,10 +222,7 @@ public class MainActivity extends AppCompatActivity implements PersonalDialog.Pe
         friendDatabase.child("name").setValue(camerrowUser.getName());
         friendDatabase.child("username").setValue(camerrowUser.getUsername());
         friendDatabase.child("email").setValue(camerrowUser.getEmail());
-        friendDatabase.child("picture").setValue(camerrowUser.getProfilePicture());
-
-
-
+        friendDatabase.child("image").setValue(camerrowUser.getProfilePicture());
     }
 
     public static void hideSoftKeyboard(Activity activity) {

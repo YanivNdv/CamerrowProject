@@ -214,6 +214,7 @@ public class MyProfileActivity extends AppCompatActivity {
                         }
                     });
 
+
                     mProgress.dismiss();
                     Toast.makeText(MyProfileActivity.this, "Upload Done", Toast.LENGTH_SHORT).show();
                 }

@@ -92,7 +92,6 @@ public class SearchAdapter extends RecyclerView.Adapter <SearchAdapter.SearchBar
 
         holder.name.setText(camerrowUserArrayList.get(position).getName());
         holder.username.setText(camerrowUserArrayList.get(position).getUsername());
-
         Glide.with(context).load(camerrowUserArrayList.get(position).getProfilePicture()).asBitmap().placeholder(R.mipmap.ic_launcher_round).into(holder.profileImage);
 
        holder.bind(camerrowUserArrayList.get(position),position,listener);
